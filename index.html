@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeVal AI | Premium House Price Predictor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Animated Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-house-laptop"></i>
+                <span>LuxeVal <span class="accent">AI</span></span>
+            </div>
+            <div class="subtitle">Linear Regression Real Estate Valuation Engine</div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <div class="app-grid">
+            <!-- Left Panel: Input Control Center -->
+            <section class="panel control-panel">
+                <div class="panel-header">
+                    <i class="fa-solid fa-sliders text-accent"></i>
+                    <h2>Property Characteristics</h2>
+                    <button id="btn-reset" class="btn-icon" title="Reset to average values">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                </div>
+                <p class="panel-desc">Adjust the sliders or enter precise numbers to calculate the estimated property value.</p>
+
+                <form id="predictor-form" onsubmit="event.preventDefault();">
+                    <!-- Size Input Group -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="input-size"><i class="fa-solid fa-maximize"></i> Property Size (Sq. Ft.)</label>
+                            <input type="number" id="num-size" min="300" max="5000" step="10" value="1742">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="input-size" class="slider" min="300" max="5000" step="10" value="1742">
+                            <span class="range-limits"><span>300 sqft</span><span>5,000 sqft</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Bedrooms Input Group -->
+                    <div class="input-group">
+                        <label class="group-label"><i class="fa-solid fa-bed"></i> Bedrooms</label>
+                        <div class="bedroom-selector" id="bedroom-btn-group">
+                            <button type="button" class="btn-bed" data-val="1">1</button>
+                            <button type="button" class="btn-bed" data-val="2">2</button>
+                            <button type="button" class="btn-bed active" data-val="3">3</button>
+                            <button type="button" class="btn-bed" data-val="4">4</button>
+                            <button type="button" class="btn-bed" data-val="5">5</button>
+                            <button type="button" class="btn-bed" data-val="6">6+</button>
+                        </div>
+                        <input type="hidden" id="input-bedrooms" value="3">
+                    </div>
+
+                    <!-- Age Input Group -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="input-age"><i class="fa-solid fa-hourglass-half"></i> Building Age (Years)</label>
+                            <input type="number" id="num-age" min="0" max="80" step="1" value="17">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="input-age" class="slider" min="0" max="80" step="1" value="17">
+                            <span class="range-limits"><span>New Construction (0)</span><span>80 Years</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Distance Input Group -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="input-distance"><i class="fa-solid fa-route"></i> Distance to City Center (km)</label>
+                            <input type="number" id="num-distance" min="0.5" max="40" step="0.1" value="11.3">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="input-distance" class="slider" min="0.5" max="40" step="0.1" value="11.3">
+                            <span class="range-limits"><span>Downtown (0.5 km)</span><span>Suburbs (40 km)</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Income Input Group -->
+                    <div class="input-group">
+                        <div class="input-header">
+                            <label for="input-income"><i class="fa-solid fa-wallet"></i> Neighborhood Median Income ($k/yr)</label>
+                            <input type="number" id="num-income" min="10" max="250" step="1" value="86">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="input-income" class="slider" min="10" max="250" step="1" value="86">
+                            <span class="range-limits"><span>$10k</span><span>$250k</span></span>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Right Panel: Output and Dashboard -->
+            <div class="display-column">
+                <!-- Result Panel -->
+                <section class="panel result-panel">
+                    <div class="prediction-container">
+                        <h3>Estimated Property Value</h3>
+                        <div class="price-display">
+                            <span class="currency">₹</span>
+                            <span id="price-value" class="price-value">139.77</span>
+                            <span class="unit">Lakhs</span>
+                        </div>
+                        <div class="usd-equivalent">
+                            Approx. <span id="price-usd">$168,400</span> USD
+                        </div>
+                    </div>
+
+                    <!-- Contribution Breakdown -->
+                    <div class="breakdown-container">
+                        <h4>Valuation Contribution Breakdown</h4>
+                        <div class="breakdown-bars">
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Base Value (Intercept)</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar positive" id="bar-intercept" style="width: 100%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-intercept">+17.52 L</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Size Contribution</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar positive" id="bar-size" style="width: 50%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-size">+103.38 L</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Bedrooms impact</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar positive" id="bar-bedrooms" style="width: 25%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-bedrooms">+25.03 L</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Building Age penalty</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar negative" id="bar-age" style="width: 10%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-age">-9.11 L</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Distance penalty</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar negative" id="bar-distance" style="width: 12%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-distance">-13.37 L</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="breakdown-label">Neighborhood Income impact</div>
+                                <div class="breakdown-bar-bg">
+                                    <div class="breakdown-bar positive" id="bar-income" style="width: 18%"></div>
+                                </div>
+                                <div class="breakdown-val" id="val-income">+17.10 L</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Model Stats Panel -->
+                <section class="panel stats-panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-chart-line text-accent"></i>
+                        <h2>AI Model Performance Metrics</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Model Fit Accuracy (R²)</span>
+                            <span class="stat-value">75.55%</span>
+                            <div class="stat-progress">
+                                <div class="stat-progress-bar" style="width: 75.55%"></div>
+                            </div>
+                            <span class="stat-desc">75.55% of price variance explained</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Mean Absolute Error (MAE)</span>
+                            <span class="stat-value">₹17.98 L</span>
+                            <span class="stat-desc">Average absolute deviation</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Root Mean Sq. Error (RMSE)</span>
+                            <span class="stat-value">₹25.17 L</span>
+                            <span class="stat-desc">Standard deviation of residuals</span>
+                        </div>
+                    </div>
+                    <div class="model-meta">
+                        <span><i class="fa-solid fa-circle-check"></i> Trained on 100 historical properties</span>
+                        <span><i class="fa-solid fa-brain"></i> Linear Regression Algorithm</span>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Developed with <i class="fa-solid fa-heart text-accent"></i> for premium real-time valuations. Model trained on historical real estate records.</p>
+        </footer>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>
